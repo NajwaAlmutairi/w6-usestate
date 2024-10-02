@@ -1,8 +1,10 @@
 import React from 'react'
 import Screen from '../component/Screen'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 
-function Home({ userObject }) {
+
+function Home() {
     const [userOneText, setUserOneText] = useState('');
     const [userTwoText, setUserTwoText] = useState('');
     const [messages, setMessages] = useState([
@@ -14,6 +16,14 @@ function Home({ userObject }) {
     let minutes = String(date.getMinutes()).padStart(2, '0'); 
     let time = `${hours}:${minutes}`;
 
+    const navigate = useNavigate();
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+
+
+    if (!localStorage.getItem('user')) {
+        navigate("/"); 
+        return navigate("/"); 
+    }
     const sendChat = (whoIsSending) => {
         if (whoIsSending === 'userOne' && userOneText.trim()) {
             setMessages((prevMessages) => [
@@ -37,13 +47,14 @@ function Home({ userObject }) {
             setUserTwoText('');
         }
     };
+    
     return (
         <>
             <div className="flex justify-evenly bg-[#b1a399] items-center min-h-screen  max-sm:flex-col max-sm:flex-wrap max-sm:gap-4 max-sm:pb-5">
-                <Screen userObject={userObject} messageArray={messages} userText={userOneText} setUserText={setUserOneText}
+                <Screen userObject={storedUser} messageArray={messages} userText={userOneText} setUserText={setUserOneText}
                     sendChat={sendChat} userType='userOne' time={time}
                 />
-                <Screen userObject={userObject} messageArray={messagesTwo} userText={userTwoText} setUserText={setUserTwoText}
+                <Screen userObject={storedUser} messageArray={messagesTwo} userText={userTwoText} setUserText={setUserTwoText}
                     sendChat={sendChat} userType='userTwo' time={time}
                 />
             </div>

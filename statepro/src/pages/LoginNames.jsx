@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComment, faMobileScreen } from '@fortawesome/free-solid-svg-icons';
 
-function LoginNames({ onRegistration }) {
+function LoginNames() {
     const [firstName, setFirstName] = useState('');
     const [secondName, setSecondName] = useState('');
     const [firstGender, setFirstGender] = useState('female');
     const [secondGender, setSecondGender] = useState('female');
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
+    const [user, setUser] = useState({});
 
+    if(localStorage.getItem('user')){
+        localStorage.removeItem('user');
+    }
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!firstName || !secondName) {
@@ -18,15 +22,18 @@ function LoginNames({ onRegistration }) {
             return;
         }
         setErrorMessage('');
-        const user = {
-            firstName:firstName,
-            firstGender:firstGender,
-            secondName:secondName,
-            secondGender:secondGender,
-        };
 
-        onRegistration(user);
-        navigate("/second"); 
+        const updatedUser = {
+            ...user,
+            firstName: firstName,
+            firstGender: firstGender,
+            secondName: secondName,
+            secondGender: secondGender,
+        };
+        setUser(updatedUser); 
+        localStorage.setItem('user', JSON.stringify(updatedUser)); 
+        navigate("/home"); 
+       
     };
     return (
         <div className="flex justify-center items-center min-h-screen bg-[#b1a399]">
